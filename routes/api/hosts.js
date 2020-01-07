@@ -6,10 +6,10 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 const { check, validationResult } = require("express-validator/check");
 
-const User = require("../../models/User");
+const Host = require("../../models/Host");
 
-// @route           POST api/users
-// @description     Register user
+// @route           POST api/hosts
+// @description     Register host
 // @access          Public
 router.post(
   "/",
@@ -32,23 +32,23 @@ router.post(
     const { name, email, password } = req.body;
 
     try {
-      // See if user exists
-      let user = await User.findOne({ email });
+      // See if host exists
+      let host = await Host.findOne({ email });
 
-      if (user) {
+      if (host) {
         return res
           .status(400)
-          .json({ errors: [{ msg: "User already exists" }] });
+          .json({ errors: [{ msg: "Host already exists" }] });
       }
 
-      // Get users gravatar
+      // Get hosts gravatar
       const avatar = gravatar.url(email, {
         s: "200", // size
         r: "PG", // Don't let user upload graphic image
         d: "mm" // Default user icon image
       });
 
-      user = new User({
+      host = new Host({
         name,
         email,
         avatar,
@@ -57,14 +57,14 @@ router.post(
 
       // Encrypt password
       const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
+      host.password = await bcrypt.hash(password, salt);
 
       // Save user to DB
-      await user.save();
+      await host.save();
 
       const payload = {
-        user: {
-          id: user.id
+        host: {
+          id: host.id
         }
       };
 
