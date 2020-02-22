@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const FieldSchema = new Schema({
   host: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "hosts"
+    ref: "host"
   },
   location: {
     street: {
